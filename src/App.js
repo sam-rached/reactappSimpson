@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
+  const [users, setUsers] = useState();
+
+  // Function to collect data
+  const getApiData = async () => {
+    const response = await fetch(
+      "https://simpsons-quotes-api.herokuapp.com/quotes"
+    ).then((response) => response.json());
+
+    setUsers(response);
+  };
+
+  useEffect(() => {
+    getApiData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {users &&
+        users.map((user) => (
+          <div className="item-container">
+            Citation : {user.quote}{" "}
+            <div className="title"> Personnage : {user.character}</div>
+            <div className="image-container">
+              <img src={user.image} alt="image" className="image" />
+            </div>
+            <button className="button" onClick={getApiData}>
+              Clicker moi
+            </button>
+          </div>
+        ))}
     </div>
   );
 }
